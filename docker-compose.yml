@@ -1,0 +1,13 @@
+services:
+  runtainer:
+    build: .
+    ports:
+      - "3000:3000"
+    volumes:
+      # mount the host Docker socket for live mode (remove for demo mode)
+      - /var/run/docker.sock:/var/run/docker.sock
+      - runtainer-data:/root/.runtainer
+    restart: unless-stopped
+
+volumes:
+  runtainer-data:

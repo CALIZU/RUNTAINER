@@ -1,0 +1,25 @@
+name: build
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - name: Smoke test (demo mode)
+        run: |
+          RUNTAINER_DEMO=1 PORT=3100 node server/index.js &
+          sleep 3
+          curl -fsS http://localhost:3100/api/health | grep '"ok":true'
+          curl -fsS http://localhost:3100/ | grep -qi runtainer
