@@ -13,8 +13,11 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: npm
+      # npm 10.8.x (bundled with Node 20) can crash on this lockfile
+      # ("Exit handler never called!") — use a current npm.
+      - run: npm install -g npm@11
       - run: npm ci
       - run: npm run build
       - name: Smoke test (demo mode)
